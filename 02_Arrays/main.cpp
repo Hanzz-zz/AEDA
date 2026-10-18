@@ -84,6 +84,6 @@ int main() {
     //array_example_1();
     //array_example_2();
     //array_example_3();
-    //array_example_4();
+    array_example_4();
     return 0;
 }

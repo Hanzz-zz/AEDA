@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 #include <format>
 #include <iostream>
@@ -69,16 +70,64 @@ static void vector_example_2() {
     print_container("v1 (after erase):", v1);
 }
 static void vector_example_3() {
-    std::vector<std::string> planets;
+    std::vector<std::string> planets1;
     const char *planets_cstr1[] = {"Mercury", "Venus", "Earth", "Mars"};
     const char *planets_cstr2[] = {"Jupiter", "Saturn", "Uranus", "Neptune"};
-    // std::copy
-    
+    // std::range::copy
+    std::ranges::copy(planets_cstr1, std::back_inserter(planets1));
+    print_container("planets1:", planets1);
+    //emplace_back()
+    std::vector<std::string> planets2{planets1};
+    planets2.emplace_back(planets2[0]);
+    planets2.emplace_back(planets2[1]);
+    planets2.emplace_back(planets2[2]);
+    planets2.emplace_back(planets2[3]);
+    print_container("planets2:", planets2);
+    //std::ranges::find
+    auto it_mars = std::ranges::find(planets2, "Mars");
+    bool found_mars = it_mars != planets2.end();
+    std::cout << (found_mars ? "Found" : "Not found") << std::endl;
+    std::cout << "value:" << *it_mars << std::endl;
+    //sort
+    auto planets3{planets2};
+    print_container("planets3 (before sort):", planets3);
+    std::ranges::sort(planets3);
+    print_container("planets3 (after sort):", planets3);
+    //relational operators
+    std::cout << std::format("planets2 == planets3: {:s}", planets2 == planets3) << std::endl;
+    //swap
+    std::swap(planets3[3], planets3[4]);
+    print_container("planets3 (after swap):", planets3);
+
+
+}
+
+static void vector_example_4() {
+    constexpr double rem_val{-1.0};
+    std::vector<double> v1{10.0, 20.0, rem_val, 30.0, 40.0, rem_val, 50.0, rem_val, 60.0, 70.0, 80.0};
+    std::vector<double> v2{v1};
+    print_container("v1 (initial values):", v1);
+    //std::ranges::remove
+    auto removed_items = std::ranges::remove(v1, rem_val);
+    print_container("v1 (after remove):", v1);
+    std::cout << "size v1: " << v1.size() << std::endl;
+    print_container("removed_items:", removed_items);
+    //sucede algo con que remueve lso items pero los serpara y te entrege lo que queda , axisten aplicaicon donde yo no quuero remover pero quiero saber quienes se estan yendo
+    // erase
+    v1.erase(removed_items.begin(), v1.end());
+    print_container("v1 (after erase):", v1);
+    //std::erase
+    print_container("v2 (initial values):", v2);
+    auto num_erased = std::erase(v2, rem_val);
+    std::cout << std::format("num_erased: {}", num_erased) << std::endl;
+    print_container("v2 (after erase):", v2);
 }
 
 int main () {
     std::cout << "Vectors !!!" << std::endl;
     //vector_example_1();
-    vector_example_2();
+    //vector_example_2();
+    //vector_example_3();
+    vector_example_4();
     return 0;
 }
